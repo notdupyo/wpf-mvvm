@@ -3,9 +3,9 @@
     public class Program
     {
         public static void Main(string[] args)
-        { 
+        {
+            // Ch01, Ch02 과제 
             // c#에서는 선언과 함께 초기화 하는게 정석 관행
-            
             int todoId = 1;
             string todoTitle = "c# 공부하기";
             bool isComplete = false;
@@ -14,7 +14,6 @@
             string priorityText;
             string urgencyText;
             string statusText;
-
 
             if(priority == 1)
             {
@@ -67,6 +66,55 @@
             Console.WriteLine($"상태     :  {statusText}");
             Console.WriteLine("========================");
 
+
+            // Ch03 과제 구현
+            string[] todoTitleArr = { "c# 공부", "wpf 공부", "mvvm 공부" };
+            bool[] isCompleteArr = { false, true, false };
+            int[] daysLeftArr = { 5, 0, 10 };
+            int completeCount = 0;
+
+
+            System.Console.WriteLine("========= TODO 항목 ========");
+            for (int i = 0; i < todoTitleArr.Length; i++)
+            {
+
+                if (daysLeftArr[i] > 7)
+                {
+                    urgencyText = "여유";
+                }
+                else if (daysLeftArr[i] <= 7 && daysLeftArr[i] > 3)
+                {
+                    urgencyText = "주의";
+                }
+                else if (daysLeftArr[i] <= 3)
+                {
+                    urgencyText = "긴급";
+                }
+                else
+                {
+                    urgencyText = "처리안됨";
+                }
+                
+
+               
+                Console.WriteLine($"할일     : [{i+1}] {todoTitleArr[i]}");
+                if (isCompleteArr[i])
+                {
+                    statusText = "완료";
+                    completeCount++;
+                    Console.WriteLine($"완료된 항목입니다.");
+                }
+                else
+                {
+                    statusText = "진행중";
+                    Console.WriteLine($"긴급도   :  {urgencyText}");
+                }
+                Console.WriteLine($"상태     :  {statusText}");
+                Console.WriteLine("-----------------------");
+
+            }
+            Console.WriteLine($"전체: {todoTitleArr.Length}개 | 완료: {completeCount}개");
+            Console.WriteLine("========================");
         }
     }
 }
