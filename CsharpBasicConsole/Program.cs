@@ -1,9 +1,34 @@
 ﻿namespace CsharpBasicConsole
 {
-    public class Program
+
+    public class TodoItem
     {
-        // ch04 과제, 내부 로직 함수로 분리
-        static string GetPriorityText(int priority)
+        public int Id { get; set; }
+        public string Title { get; set; }
+        public bool IsComplete { get; set; }
+
+        public int DaysLeft { get; set; }
+        public int Priority { get; set; }
+
+        private string _priorityText;
+        private string _urgencyText;
+        private string _statusText;
+
+        public TodoItem(int id, string title, bool isComplete, int daysLeft, int priority)
+        {
+            Id = id;
+            Title = title;
+            IsComplete = isComplete;
+            DaysLeft = daysLeft;
+            Priority = priority;
+
+            _priorityText = GetPriorityText(priority);
+            _urgencyText = GetUrgencyText(daysLeft);
+            _statusText = GetStatusText(isComplete);
+
+        }
+
+        public string GetPriorityText(int priority)
         {
             if (priority == 1)
             {
@@ -23,7 +48,7 @@
             }
         }
 
-        static string GetUrgencyText(int daysLeft)
+        public string GetUrgencyText(int daysLeft)
         {
             if (daysLeft > 7)
             {
@@ -37,18 +62,17 @@
             {
                 return "긴급";
             }
-
         }
 
-        static string GetStatusText(bool isComplete)
+        public string GetStatusText(bool isComplete)
         {
             return isComplete ? "완료" : "진행중";
         }
 
-        static void PrintTodoItem(string title, string priorityText, string urgencyText, string statusText)
+        public void PrintTodoItem()
         {
 
-            if(statusText == "완료")
+            if (_statusText == "완료")
             {
                 Console.WriteLine("---------------------------");
                 Console.WriteLine("완료한 항목 입니다.");
@@ -58,19 +82,19 @@
             }
 
             Console.WriteLine("---------------------------");
-            Console.WriteLine($"항목     :  {title}");
-            Console.WriteLine($"우선순위 :  {priorityText}");
-            Console.WriteLine($"긴급도   :  {urgencyText}");
-            Console.WriteLine($"상태     :  {statusText}");
+            Console.WriteLine($"항목     :  {Title}");
+            Console.WriteLine($"우선순위 :  {_priorityText}");
+            Console.WriteLine($"긴급도   :  {_urgencyText}");
+            Console.WriteLine($"상태     :  {_statusText}");
             Console.WriteLine("---------------------------");
 
         }
 
-        static int CountCompleteTodo(bool[] isCompleteItems)
+        public int CountCompleteTodo(bool[] isCompleteItems)
         {
             int count = 0;
 
-            for(int i = 0; i < isCompleteItems.Length; i++)
+            for (int i = 0; i < isCompleteItems.Length; i++)
             {
                 if (isCompleteItems[i])
                 {
@@ -81,28 +105,24 @@
             return count;
 
         }
+    }
+    public class Program
+    {
 
         public static void Main(string[] args)
         {
             // c#에서는 선언과 함께 초기화 하는게 정석 관행
+            TodoItem todoItem1 = new TodoItem(1, "c#공부", false, 5, 1);
+            TodoItem todoItem2 = new TodoItem(2, "wpf공부", true, 0, 3);
+            TodoItem todoItem3 = new TodoItem(3, "mvvm공부", false, 10, 2);
 
-            string[] todoItems = { "c#공부", "wpf공부", "mvvm공부" };
-            int[] daysLeftItems = { 5, 0, 10 };
-            bool[] isCompleteItems = { false, true, false };
-            int[] priorityItems = { 1, 3, 2 }; 
+            TodoItem[] todoItems = { todoItem1, todoItem2, todoItem3 };
 
-            int completeCount = CountCompleteTodo(isCompleteItems);
 
             Console.WriteLine("===== TODO 항목 =====");
-
-            for (int i = 0; i < todoItems.Length; i++)
+            foreach(TodoItem todoItem in todoItems)
             {
-                string title = todoItems[i];
-                string priorityText = GetPriorityText(priorityItems[i]);
-                string urgencyText = GetUrgencyText(daysLeftItems[i]);
-                string statusText = GetStatusText(isCompleteItems[i]);
-
-                PrintTodoItem(title, priorityText, urgencyText, statusText);
+                todoItem.PrintTodoItem();
             }
 
             Console.WriteLine("==========");
