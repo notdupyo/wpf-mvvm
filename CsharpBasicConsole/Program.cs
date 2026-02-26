@@ -3,16 +3,37 @@
 
     public class TodoItem
     {
+        // 검증 로직이 필요할때 수동 get, set 구현 -> private 필드 필요함
+        // 단순 읽기/쓰기 용 변수면 필드 자동 생성 프로퍼티 사용 -> private 필드 필요 없음
+        private int _priority;
+
         public int Id { get; set; }
         public string Title { get; set; }
         public bool IsComplete { get; set; }
 
         public int DaysLeft { get; set; }
-        public int Priority { get; set; }
+        public int Priority
+        {
+            get
+            {
+                return _priority;
+            }
+            set
+            {
+                if (value > 3 || value < 1)
+                {
+                    _priority = 2;
+                }
+                else
+                {
+                    _priority = value;
+                }
+            }
+        }
 
-        private string _priorityText;
-        private string _urgencyText;
-        private string _statusText;
+
+        // private string _priorityText = GetPriorityText();
+        // : 초기화에서 함수 호출시 객체 생성전에 실행이 되어 호출 불가능, 오류임
 
         public TodoItem(int id, string title, bool isComplete, int daysLeft, int priority)
         {
@@ -21,24 +42,19 @@
             IsComplete = isComplete;
             DaysLeft = daysLeft;
             Priority = priority;
-
-            _priorityText = GetPriorityText(priority);
-            _urgencyText = GetUrgencyText(daysLeft);
-            _statusText = GetStatusText(isComplete);
-
         }
 
-        public string GetPriorityText(int priority)
+        public string GetPriorityText()
         {
-            if (priority == 1)
+            if (Priority == 1)
             {
                 return "높음";
             }
-            else if (priority == 2)
+            else if (Priority == 2)
             {
                 return "보통";
             }
-            else if (priority == 3)
+            else if (Priority == 3)
             {
                 return "낮음";
             }
@@ -48,13 +64,13 @@
             }
         }
 
-        public string GetUrgencyText(int daysLeft)
+        public string GetUrgencyText()
         {
-            if (daysLeft > 7)
+            if (DaysLeft > 7)
             {
                 return "여유";
             }
-            else if (daysLeft <= 7 && daysLeft > 3)
+            else if (DaysLeft <= 7 && DaysLeft > 3)
             {
                 return "주의";
             }
@@ -64,15 +80,18 @@
             }
         }
 
-        public string GetStatusText(bool isComplete)
+        public string GetStatusText()
         {
-            return isComplete ? "완료" : "진행중";
+            return IsComplete ? "완료" : "진행중";
         }
 
-        public void PrintTodoItem()
+        public void Print()
         {
+            string priorityText = GetPriorityText();
+            string urgencyText = GetUrgencyText();
+            string statusText = GetStatusText();
 
-            if (_statusText == "완료")
+            if (IsComplete)
             {
                 Console.WriteLine("---------------------------");
                 Console.WriteLine("완료한 항목 입니다.");
@@ -83,28 +102,14 @@
 
             Console.WriteLine("---------------------------");
             Console.WriteLine($"항목     :  {Title}");
-            Console.WriteLine($"우선순위 :  {_priorityText}");
-            Console.WriteLine($"긴급도   :  {_urgencyText}");
-            Console.WriteLine($"상태     :  {_statusText}");
+            Console.WriteLine($"우선순위 :  {priorityText}");
+            Console.WriteLine($"긴급도   :  {urgencyText}");
+            Console.WriteLine($"상태     :  {statusText}");
             Console.WriteLine("---------------------------");
 
         }
 
-        public int CountCompleteTodo(bool[] isCompleteItems)
-        {
-            int count = 0;
 
-            for (int i = 0; i < isCompleteItems.Length; i++)
-            {
-                if (isCompleteItems[i])
-                {
-                    count++;
-                }
-            }
-
-            return count;
-
-        }
     }
     public class Program
     {
@@ -118,19 +123,35 @@
 
             TodoItem[] todoItems = { todoItem1, todoItem2, todoItem3 };
 
+            int completeCount = 0;
+
 
             Console.WriteLine("===== TODO 항목 =====");
             foreach(TodoItem todoItem in todoItems)
             {
-                todoItem.PrintTodoItem();
+                todoItem.Print();
             }
-
             Console.WriteLine("==========");
 
-            
+            completeCount = CountCompleteTodo(todoItems);
 
-            Console.WriteLine($"전체: {todoItems.Length}개 | 완료: {completeCount}개");
-            
+            Console.WriteLine($"전체: {todoItems.Length}개 | 완료: {completeCount}");
         }
+
+        static int CountCompleteTodo(TodoItem[] items)
+        {
+            int count = 0;
+
+            foreach (TodoItem todoItem in items)
+            {
+                if(todoItem.IsComplete)
+                {
+                    count++;
+                }
+            }
+
+            return count;
+        }
+
     }
 }

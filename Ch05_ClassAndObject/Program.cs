@@ -17,6 +17,12 @@
 
         private decimal _balance; // private변수명은 _로 시작하는것이 관례
 
+        // Property(속성)
+        // 캡슐화를 위해 private 한 필드변수에 접근하기 위한 통로 제공
+        // 단순한 읽기/쓰기 용 변수라면 private 필드 선언 없이 Property만 선언하여 사용 가능 -> 자동 필드 생성
+        // set 구문에서 검증 로직을 작성한다면 private 필드 선언 필요, get set 구현 필요
+        // set 구문에선 value라는 set구문에서만 사용하는 특수 키워드 사용
+        // value는 해당 프로퍼티에 대입하는 값을 전달해주는 특별한 키워드
         public string OwnerName { get; set; } // 프로퍼티는 대문자 시작이 관례
         public string AccountNumber { get; set; }
 
