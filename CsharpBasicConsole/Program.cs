@@ -1,157 +1,146 @@
 ﻿namespace CsharpBasicConsole
 {
-
-    public class TodoItem
+    public class Character
     {
-        // 검증 로직이 필요할때 수동 get, set 구현 -> private 필드 필요함
-        // 단순 읽기/쓰기 용 변수면 필드 자동 생성 프로퍼티 사용 -> private 필드 필요 없음
-        private int _priority;
+        public string Name;
+        public string CharacterClass;
+        public int Level;
+        public int Hp;
+        public int Mp;
 
-        public int Id { get; set; }
-        public string Title { get; set; }
-        public bool IsComplete { get; set; }
+        public Character(string name, string characterClass, int level, int hp, int mp)
+        {
+            Name = name;
+            CharacterClass = characterClass;
+            Level = level;
+            Hp = hp;
+            Mp = mp;
+        }
 
-        public int DaysLeft { get; set; }
-        public int Priority
+        public virtual string GetStatus()
+        {
+            return $"HP: {Hp} | Mp: {Mp}";
+        }
+
+        public void PrintInfo()
+        {
+            Console.WriteLine("=====캐릭터정보=====");
+            Console.WriteLine($"[{CharacterClass}] {Name} (Lv.{Level})");
+            Console.WriteLine(GetStatus());
+
+        }
+    }
+
+    public class Warrior : Character, ISkillable
+    {
+        private int _rage;
+        public int Rage
         {
             get
             {
-                return _priority;
+                return _rage;
             }
             set
             {
-                if (value > 3 || value < 1)
+                if(value < 0 || value > 100)
                 {
-                    _priority = 2;
+                    Console.WriteLine("0~100 사이값 입력");
+
                 }
                 else
-                {
-                    _priority = value;
+                { // set 문에서 return 하지않음
+                    _rage = value;
                 }
+                
             }
         }
-
-
-        // private string _priorityText = GetPriorityText();
-        // : 초기화에서 함수 호출시 객체 생성전에 실행이 되어 호출 불가능, 오류임
-
-        public TodoItem(int id, string title, bool isComplete, int daysLeft, int priority)
+        public Warrior(string name, string characterClass, int level, int hp, int mp, int rage = 0) : base(name, characterClass, level, hp, mp)
         {
-            Id = id;
-            Title = title;
-            IsComplete = isComplete;
-            DaysLeft = daysLeft;
-            Priority = priority;
+            Rage = rage;
         }
 
-        public string GetPriorityText()
+        public override string GetStatus()
         {
-            if (Priority == 1)
-            {
-                return "높음";
-            }
-            else if (Priority == 2)
-            {
-                return "보통";
-            }
-            else if (Priority == 3)
-            {
-                return "낮음";
-            }
-            else
-            {
-                return "처리안됨";
-            }
+            string statusResult = base.GetStatus();
+
+            return statusResult + $"| Rage: {Rage}";
         }
 
-        public string GetUrgencyText()
+        public void UseSkill()
         {
-            if (DaysLeft > 7)
-            {
-                return "여유";
-            }
-            else if (DaysLeft <= 7 && DaysLeft > 3)
-            {
-                return "주의";
-            }
-            else
-            {
-                return "긴급";
-            }
+            Console.WriteLine("Smash! You give tone of demage enemy");
         }
-
-        public string GetStatusText()
-        {
-            return IsComplete ? "완료" : "진행중";
-        }
-
-        public void Print()
-        {
-            string priorityText = GetPriorityText();
-            string urgencyText = GetUrgencyText();
-            string statusText = GetStatusText();
-
-            if (IsComplete)
-            {
-                Console.WriteLine("---------------------------");
-                Console.WriteLine("완료한 항목 입니다.");
-                Console.WriteLine("---------------------------");
-
-                return;
-            }
-
-            Console.WriteLine("---------------------------");
-            Console.WriteLine($"항목     :  {Title}");
-            Console.WriteLine($"우선순위 :  {priorityText}");
-            Console.WriteLine($"긴급도   :  {urgencyText}");
-            Console.WriteLine($"상태     :  {statusText}");
-            Console.WriteLine("---------------------------");
-
-        }
-
-
     }
+
+    public class Mage : Character, ISkillable
+    {
+        public string Element;
+
+        public Mage(string name, string characterClass, int level, int hp, int mp, string element) : base(name, characterClass, level, hp, mp)
+        {
+            Element = element;
+        }
+
+        public override string GetStatus()
+        {
+            return base.GetStatus() + $"| Element: {Element}";
+        }
+
+        public void UseSkill()
+        {
+            Console.WriteLine($"{Element} Magic! You atack enemy");
+        }
+    }
+
+    public class Trap : ISkillable
+    {
+        public void UseSkill()
+        {
+            Console.WriteLine("트랩 스킬이 발동했습니다.");
+        }
+    }
+
+    public interface ISkillable
+    {
+        public void UseSkill();
+    }
+
     public class Program
     {
-
-        public static void Main(string[] args)
+        public static void Main(string[] argv)
         {
-            // c#에서는 선언과 함께 초기화 하는게 정석 관행
-            TodoItem todoItem1 = new TodoItem(1, "c#공부", false, 5, 1);
-            TodoItem todoItem2 = new TodoItem(2, "wpf공부", true, 0, 3);
-            TodoItem todoItem3 = new TodoItem(3, "mvvm공부", false, 10, 2);
+            Trap trap = new Trap();
 
-            TodoItem[] todoItems = { todoItem1, todoItem2, todoItem3 };
+            Character[] characters = new Character[2];
 
-            int completeCount = 0;
+            Warrior warrior = new Warrior("아서", "전사", 10, 150, 30, 80);
+            Mage mage = new Mage("멀린", "마법사", 12, 80, 200, "불");
 
+            characters[0] = warrior;
+            characters[1] = mage;
 
-            Console.WriteLine("===== TODO 항목 =====");
-            foreach(TodoItem todoItem in todoItems)
+            foreach(Character character in characters)
             {
-                todoItem.Print();
-            }
-            Console.WriteLine("==========");
-
-            completeCount = CountCompleteTodo(todoItems);
-
-            Console.WriteLine($"전체: {todoItems.Length}개 | 완료: {completeCount}");
-        }
-
-        static int CountCompleteTodo(TodoItem[] items)
-        {
-            int count = 0;
-
-            foreach (TodoItem todoItem in items)
-            {
-                if(todoItem.IsComplete)
-                {
-                    count++;
-                }
+                character.PrintInfo();
             }
 
-            return count;
-        }
+            // 인터페이스를 타입으로 선언하여 공통점이 없는 클래스간에
+            // "공통 기능"으로 묶어서 기능을 사용한다.
+            // Character 객체와 Trap객체는 공통점이 없지만 같은 기능을 공유해야 한다고 가정
+            // Warrior, Mage, Trap 객체는 모두 ISkillable 인터페이스를 구현하여 인터페이스 타입의 배열에 할당 가능
+            ISkillable[] skillables = new ISkillable[3];
+            skillables[0] = warrior;
+            skillables[1] = mage;
+            skillables[2] = trap;
 
+            Console.WriteLine("=====스킬사용=====");
+            foreach(ISkillable skillable in skillables)
+            {
+                skillable.UseSkill();
+            }
+
+        }
     }
+
+
 }
