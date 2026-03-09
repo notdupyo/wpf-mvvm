@@ -1,0 +1,161 @@
+# Chapter07. Event and Delegate
+---
+## 1. **Delegate와 event 없이 구현한 코드의 문제점**  
+```csharp  
+// 개발자는 화면에 그리기 위한 버튼 객체를 원함
+// 또한 개발자는 로그인버튼을 눌렀을 때 '음악이 재생'되고 '로그인 화면으로 이동'되길 원함
+public class Button
+{
+	private SoundManager _soundManager;
+	private LoginScreen _loginScreen;
+
+	public void Click()
+	{
+		console.WriteLine("버튼을 클릭함");
+
+		// 음악 재생
+		_soundManager.PlaySound();
+		// 로그인
+		_loginScreen.Login();
+	}
+
+}
+```  
+- Button 클래스 내부에서 직접 SoundManager, LoginScreen 클래스를 생성하여 객체간 결합도가 너무 강함  
+- Button의 기능은 단지 눌림/안눌림 상태만 관리해야 하는데 이 경우 PlaySound()와 Login() 기능의 책임도 져야 함(단일책임원칙 위반)  
+---  
+## 2. **Delegate(델리게이트)의 탄생**  
+- **Delegate(델리게이트)란?**  
+: **쉽게 얘기해 메소드를 담는 변수**  
+```csharp  
+// 일반 변수에 데이터를 담듯이  
+int number = 10;  
+string text = "hello";  
+  
+// Delegate에는 메소드를 담을 수 있다.  
+Action myMethod = SomeMethod;
+myMethod(); // SomeMethod가 실행된다.  
+```  
+- **Delegate의 종류**  
+
+델리게이트|형태|설명  
+---|---|---  
+Action|반환없음, 매개변수 없음|void Method()  
+Action<T>|반환없음, 매개변수 1개|void Method(T arg)  
+Action<T1, T2>|반환없음, 매개변수 2개|void Method(T1 a, T2 b)  
+Func<TResult>|반환값 있음, 매개변수 없음|TResult Method()  
+Func<T, TResult>반환값 있음, 매개변수 1개|TResult Method(T arg)  
+  
+- **Delegate 종류별 사용예**
+```csharp  
+// Action: 반환값 없는 메소드  
+Action myMethod = SomeMethod; // void SomeMethod();  
+  
+// Action<T>: 반환없음, 매개변수 1개
+Action<string> myMethod2 = SayMessage; // void SayMessage(string msg);  
+
+// Func<TResult>: 반환값 있음, 매개변수 없음
+Func<int> getNumber = GetRandomNumber; // int GetRandomNumber();  
+
+// Func<T1, TResult>: 반환값 있음, 매개변수 1개  
+Func<int, string> convertNumber = ConvertNumToStr; // int ConvertNumToStr(int num);  
+```  
+---  
+- **왜 메서드를 변수에 담는가?**  
+: 실행할 메서드를 나중에 결정할 수 있다.  
+```csharp  
+public class Button
+{
+	// 어떠한 기능(메소드)을 실행할 지 모르지만 Button이 클릭됐을때 실행할 메소드를 담는 델리게이트  
+	public Action OnClickDelgate; // 아직 메소드를 담지 않음, 어떤 기능이 실행될지 정해지지 않음  
+
+	public void Click()
+	{
+		Console.WriteLine("버튼을 클릭함");  
+		  
+		if(OnClickDelegate != null)  
+		{  
+		    // Button에선 실행할 메소드가 무엇인지 모르지만 어쨋든 실행한다.
+			OnClickDelegate.Invoke(); // Invoke()는 delegate에 담긴 메소드를 전부 실행하는 함수  
+		}
+	}
+}  
+  
+// 외부(여기선 Main)에서 사용하는 메서드를 담는다. 확장성 확보  
+public static void Main()  
+{
+	Button loginBtn = new Button(); // Button 객체 생성  
+	loginBtn.OnClickDelegate = SounManager.PlaySound(); // 음악재생 기능 등록  
+	loginBtn.OnClickDelegate += LoginScreen.Login(); // 로그인 화면 이동 기능 등록  
+}
+```  
+---  
+## 3. Event(이벤트)란?  
+: **외부에서 직접 호출할 수 없는 Delegate**  
+- **Delegate의 문제점**  
+```csharp  
+public class Button  
+{  
+	public Action OnClickDelegate;  
+}  
+  
+// 외부에서 마음대로 덮어쓰기 가능
+public static void Main()
+{
+	Button loginBtn = new Button();
+	// 등록 생략  
+  
+	// 마음대로 외부 사용자가 메소드를 덮어쓰거나 삭제가 가능하다.  
+	loginBtn.OnClickDelegate = null // 기존에 등록된 메소드를 전부 지움
+	loginBtn.OnClickDelegate =  Hacer.StealPassword(); // 위험한 코드로 덮어 씌움  
+}  
+```  
+- **Event를 사용하여 문제해결**  
+```  
+public class Button  
+{  
+	// event 키워드를 delegate앞에 붙인다.  
+	public event Action OnClickEvent;  
+}  
+
+loginBtn.OnClickEvent = null // 허용하지 않음, 오류  
+loginBtn.OnClickEvent.Invoke() // 함수실행도 객체 내부에서만 사용 가능, 오류
+
+// 외부에서는 +=(등록), -=(해제) 만 가능
+loginBtn.OnclckEvent +=(-=) SomeMethod;  
+```  
+- **Delegate, event 등록 연산자**  
+
+연산자|의미  
+---|---  
+=|기존 메서드 덮어쓰고 새 매서드 등록(없으면 등록)  
++=|기존 메서드 유지하고 새 매서드 추가(없으면 등록)  
+-=|등록된 메서드 제거  
+
+---  
+## 4. EventHandler - 표준 이벤트 패턴  
+: **c#에서는 event를 위한 표준 delegate가 있다.**  
+```csharp  
+// EventHandler : 매개변수 없는 이벤트용  
+public event EventHandler OnClickEvent;  
+  
+// EventHandler<T> : 데이터를 전달하는 이벤트용  
+public event EventHandler<string> OnClickWithMessage;  
+  
+// EventHandler의 형태  
+// object sender : 이벤트를 발생시킨 객체(누가 알림을 보냈는가)  
+// EventArgs s : 이벤트와 함께 전달할 데이터(어떤 정보를 담아 보낼 것인가)  
+void 매서드이름(object sender, EventArgs s)  
+```  
+---  
+- **커스텀 EventHandler 구현**  
+: 전달할 데이터가 있으면 EventArgs를 상속받아 구현  
+```csharp  
+// 완료 이벤트에 전달할 데이터 정의
+public class ButtonInfo : EventArgs  
+{  
+	public string BtnName {get; set;}  
+	public int BtnHeight {get; set;}
+}  
+```  
+---  
