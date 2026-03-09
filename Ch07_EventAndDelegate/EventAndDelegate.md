@@ -44,7 +44,7 @@ Action|반환없음, 매개변수 없음|void Method()
 Action<T>|반환없음, 매개변수 1개|void Method(T arg)  
 Action<T1, T2>|반환없음, 매개변수 2개|void Method(T1 a, T2 b)  
 Func<TResult>|반환값 있음, 매개변수 없음|TResult Method()  
-Func<T, TResult>반환값 있음, 매개변수 1개|TResult Method(T arg)  
+Func<T, TResult>|반환값 있음, 매개변수 1개|TResult Method(T arg)  
   
 - **Delegate 종류별 사용예**
 ```csharp  
