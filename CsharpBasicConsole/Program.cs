@@ -1,5 +1,26 @@
 ﻿namespace CsharpBasicConsole
 {
+    public class CharacterEventArgs : EventArgs
+    {
+        public string CharacterName { get; set; }
+        public int Amount { get; set; }
+        public int CurruentHp { get; set; }
+
+    }
+
+    public class BattleLog
+    {
+        public void OnChracterDamaged()
+        {
+            Console.WriteLine($"{CharacterName}이 {Amount} 데미지를 받음 (현재 HP: {CurrentHp})");
+        }
+
+        public void OnChracterDied()
+        {
+            Console.WriteLine($"{CharacterName}이 사망했습니다.");
+        }
+    }
+
     public class Character
     {
         public string Name;
@@ -8,6 +29,9 @@
         public int Hp;
         public int Mp;
 
+        // 이벤트 추가
+        private event Action Battle;
+
         public Character(string name, string characterClass, int level, int hp, int mp)
         {
             Name = name;
@@ -15,6 +39,16 @@
             Level = level;
             Hp = hp;
             Mp = mp;
+        }
+
+        public void TakeDamage(int amount)
+        {
+            if(this.Hp <= 0)
+            {
+                Console.WriteLine("죽었습니다.");
+                return;
+            }
+            this.Hp = this.Hp - amount;
         }
 
         public virtual string GetStatus()
