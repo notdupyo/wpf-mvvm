@@ -4,20 +4,27 @@
     {
         public string CharacterName { get; set; }
         public int Amount { get; set; }
-        public int CurruentHp { get; set; }
+        public int CurrentHp { get; set; }
 
+        public CharacterEventArgs(string characterName, int amount, int currentHp)
+        {
+            CharacterName = characterName;
+            Amount = amount;
+            CurrentHp = currentHp;
+        }
     }
 
     public class BattleLog
     {
-        public void OnChracterDamaged()
+        
+        public void OnCharacterDamaged(CharacterEventArgs eventArgs)
         {
-            Console.WriteLine($"{CharacterName}이 {Amount} 데미지를 받음 (현재 HP: {CurrentHp})");
+            Console.WriteLine($"{eventArgs.CharacterName}이 {eventArgs.Amount} 데미지를 받음 (현재 HP: {eventArgs.CurrentHp})");
         }
 
-        public void OnChracterDied()
+        public void OnCharacterDied(CharacterEventArgs eventArgs)
         {
-            Console.WriteLine($"{CharacterName}이 사망했습니다.");
+            Console.WriteLine($"{eventArgs.CharacterName}이 사망했습니다.");
         }
     }
 
@@ -30,7 +37,12 @@
         public int Mp;
 
         // 이벤트 추가
-        private event Action Battle;
+        // Action 반환값 없음
+        // Func 반환값 있음
+        // EventHandler 이벤트 처리 전용 
+        public event Action<CharacterEventArgs> Damaged;
+        public event Action<CharacterEventArgs> Died;
+       
 
         public Character(string name, string characterClass, int level, int hp, int mp)
         {
@@ -39,16 +51,21 @@
             Level = level;
             Hp = hp;
             Mp = mp;
+
         }
 
         public void TakeDamage(int amount)
         {
-            if(this.Hp <= 0)
+            this.Hp = this.Hp - amount;
+
+            
+            Damaged?.Invoke(new CharacterEventArgs(this.Name, amount, this.Hp));
+
+            if (this.Hp <= 0)
             {
-                Console.WriteLine("죽었습니다.");
+                Died?.Invoke(new CharacterEventArgs(this.Name, amount, this.Hp));
                 return;
             }
-            this.Hp = this.Hp - amount;
         }
 
         public virtual string GetStatus()
@@ -172,6 +189,18 @@
             {
                 skillable.UseSkill();
             }
+
+            BattleLog battleLog = new BattleLog();
+            warrior.Damaged += battleLog.OnCharacterDamaged;
+            warrior.Died += battleLog.OnCharacterDied;
+            mage.Damaged += battleLog.OnCharacterDamaged;
+            mage.Died += battleLog.OnCharacterDied;
+
+            Console.WriteLine("====전투시작====");
+            warrior.TakeDamage(30);
+            mage.TakeDamage(50);
+            warrior.TakeDamage(100);
+            mage.TakeDamage(50);
 
         }
     }
