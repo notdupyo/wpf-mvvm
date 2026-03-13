@@ -5,8 +5,85 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Ch09_Control"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-
+        Title="Todo 관리 앱" Height="500" Width="400">
+    <Grid Margin="10">
+        <!-- 행 정의 -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        
+        <!-- Row 0 : 입력 영역 -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,10">
+            <!-- TextBox : 할 일 제목 입력 -->
+            <TextBox x:Name="txtTitle"
+                     Width="250"
+                     Height="30"
+                     VerticalAlignment="Center"></TextBox>
+            
+            <!-- Button : 할 일 추가 버튼-->
+            <Button x:Name="btnAdd"
+                    Content="할 일 추가"
+                    Width="60"
+                    Height="30"
+                    Margin="10,0,0,0"
+                    Click="btnAdd_Click"></Button>
+        </StackPanel>
+        
+        <!-- Row 1: 옵션 영역 -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,10">
+            <!-- ComboBox: 운선순위 선택 -->
+            <ComboBox x:Name="cmbPriority"
+                      Width="80"
+                      Margin="5,0,20,0"
+                      SelectedIndex="1">
+                <!-- ComboBoxItem: 드롭다운 목록의 각 항목(중복 선택 가능)-->
+                <ComboBoxItem Content="높음"></ComboBoxItem>
+                <ComboBoxItem Content="보통"></ComboBoxItem>
+                <ComboBoxItem Content="낮음"></ComboBoxItem>
+            </ComboBox>
+            
+            <!-- CheckBox: 중요 표시-->
+            <CheckBox x:Name="chkImportant"
+                      Content="중요 항목"
+                      VerticalAlignment="Center"></CheckBox>
+        </StackPanel>
+        
+        <!-- Row 2: 목록 영역 -->
+        <ListBox x:Name="lstTodos"
+                 Grid.Row="2"
+                 Margin="0,0,0,10"
+                 SelectionChanged="lstTodos_SelectionChanged"></ListBox>
+        
+        <!-- Row 3: 하단 버튼 영역 -->
+        <StackPanel Grid.Row="3" Orientation="Horizontal">
+            <!-- 완료 토글 버튼-->
+            <Button x:Name="btnToggle"
+                    Content="완료 처리"
+                    Width="80"
+                    Margin="0,0,10,0"
+                    Click="btnToggle_Click"/>
+            
+            <!-- 삭제 버튼-->
+            <Button x:Name="btnDelete"
+                    Content="삭제"
+                    Width="60"
+                    Margin="0,0,10,0"
+                    Click="btnDelete_Click"/>
+            
+            <!-- 전체 삭제 -->
+            <Button x:Name="btnClear"
+                    Content="전체 삭제"
+                    Width="80"
+                    Click="btnClear_Click"></Button>
+            
+            <!-- 상태 표시 -->
+            <TextBlock x:Name="txtStatus"
+                       Text="0개 항목"
+                       VerticalAlignment="Center"
+                       Margin="50,0,0,0"/>
+        </StackPanel>
     </Grid>
 </Window>
