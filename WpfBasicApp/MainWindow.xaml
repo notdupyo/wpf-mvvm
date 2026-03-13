@@ -5,28 +5,46 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfBasicApp"
         mc:Ignorable="d"
-        Title="RPG캐릭터정보" Height="450" Width="800">
+        Title="캐릭터 생성기" Height="600" Width="400">
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"></ColumnDefinition>
-            <ColumnDefinition Width="*"></ColumnDefinition>
-        </Grid.ColumnDefinitions>
+        <!-- 전체 레이아웃-->
+        <!-- 4 Grid rows -->
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Column="0" Grid.Row="0" VerticalAlignment="Center" Text="이름: " HorizontalAlignment="Center"></TextBlock>
-        <TextBlock Grid.Column="0" Grid.Row="1" VerticalAlignment="Center" Text="직업: " HorizontalAlignment="Center"></TextBlock>
-        <TextBlock Grid.Column="0" Grid.Row="2" VerticalAlignment="Center" Text="레벨: " HorizontalAlignment="Center"></TextBlock>
-        <TextBlock Grid.Column="0" Grid.Row="3" VerticalAlignment="Center" Text="HP: " HorizontalAlignment="Center"></TextBlock>
-
-        <TextBlock Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" x:Name="charName"></TextBlock>
-        <TextBlock Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" x:Name="charClass"></TextBlock>
-        <TextBlock Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center" x:Name="level"></TextBlock>
-        <TextBlock Grid.Column="1" Grid.Row="3" VerticalAlignment="Center" HorizontalAlignment="Center" x:Name="Hp"></TextBlock>
-        
+        <!-- row 0 : 캐릭터 정보 입력 -->
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <!-- grid 0 > column 0 : 캐릭터 정보 라벨 -->
+            <StackPanel Grid.Column="0" Margin="10">
+                <Label Content="이름: " HorizontalAlignment="Center" />
+                <Label Content="직업: " HorizontalAlignment="Center" />
+                <Label Content="레벨: " HorizontalAlignment="Center" />
+            </StackPanel>
+            <!-- grid 0 > column 1 : 캐릭터 정보 입력 txtbox -->
+            <StackPanel Grid.Column="1" Margin="10">
+                <StackPanel Grid.Column="1" Margin="10">
+                    <TextBox x:Name="txtBoxCharName" 
+                             HorizontalAlignment="Left"
+                             Height="15"
+                             Width="150"/>
+                    <TextBox x:Name="txtBoxCharClass"
+                             HorizontalAlignment="Left"
+                             Height="15"
+                             Width="150"/>
+                    <TextBox x:Name="txtBoxCharLevel"
+                             HorizontalAlignment="Left"
+                             Height="15"
+                             Width="150"/>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
     </Grid>
 </Window>
