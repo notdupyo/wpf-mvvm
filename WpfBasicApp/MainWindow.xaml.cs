@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Collections;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -16,24 +17,74 @@ namespace WpfBasicApp
     /// </summary>
     public partial class MainWindow : Window
     {
+        List<Character> list = new List<Character>();
+
         public MainWindow()
         {
+            
+
             InitializeComponent();
-
-            Warrior warrior = new Warrior("아서", "전사", 10, 150, 10);
-
-            charName.Text = warrior.CharName;
-            charClass.Text = warrior.CharClass;
-            level.Text = warrior.Level.ToString();
-            Hp.Text = warrior.Hp.ToString();
-
             
         }
 
-        
+        private void btnCreate_Click(object sender, RoutedEventArgs e)
+        {
+    
+            string charName = tbxCharName.Text;
+            string charClass = cmbbxCharClass.Text;
+            bool parseResult = int.TryParse(tbxCharLevel.Text, out int charLevel);
+            string displayFormat = "";
+            
+
+            if (string.IsNullOrEmpty(charName) || !parseResult)
+            {
+                MessageBox.Show("모든 입력정보 입력");
+                return;
+            }
+
+            switch (charClass)
+            {
+                case "전사":
+                    list.Add(new Warrior(charName, charClass, charLevel, 150, 10));
+                    break;
+                case "마법사":
+                    list.Add(new Mage(charName, charClass, charLevel, 100, 50));
+                    break;
+                default:
+                    break;
+            }
+
+            if (chkImportant.IsChecked == true)
+            {
+                displayFormat = $"[중요] {list[list.Count - 1].CharClass} {list[list.Count - 1].CharName} (Lv.{list[list.Count - 1].Level})";
+            }
+            else
+            {
+                displayFormat = $"{list[list.Count - 1].CharClass} {list[list.Count - 1].CharName} (Lv.{list[list.Count - 1].Level})";
+            }
+
+            
+            lstbxChars.Items.Add(displayFormat);
+            
+        }
+
+        private void btnDelete_Click(object sender, RoutedEventArgs e)
+        {
+            int idx = lstbxChars.SelectedIndex;
+            lstbxChars.Items.Remove(lstbxChars.SelectedItem);
+            if(idx == -1)
+            {
+                return;
+            }
+            else
+            {
+                list.RemoveAt(idx);
+            }
+
+        }
     }
 
-    public partial class Character
+    public class Character
     {
         public string CharName { get; set; }
         public string CharClass { get; set; }

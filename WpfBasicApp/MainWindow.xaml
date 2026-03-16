@@ -7,44 +7,45 @@
         mc:Ignorable="d"
         Title="캐릭터 생성기" Height="600" Width="400">
     <Grid>
-        <!-- 전체 레이아웃-->
-        <!-- 4 Grid rows -->
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
 
-        <!-- row 0 : 캐릭터 정보 입력 -->
         <Grid Grid.Row="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <!-- grid 0 > column 0 : 캐릭터 정보 라벨 -->
-            <StackPanel Grid.Column="0" Margin="10">
-                <Label Content="이름: " HorizontalAlignment="Center" />
-                <Label Content="직업: " HorizontalAlignment="Center" />
-                <Label Content="레벨: " HorizontalAlignment="Center" />
-            </StackPanel>
-            <!-- grid 0 > column 1 : 캐릭터 정보 입력 txtbox -->
-            <StackPanel Grid.Column="1" Margin="10">
-                <StackPanel Grid.Column="1" Margin="10">
-                    <TextBox x:Name="txtBoxCharName" 
-                             HorizontalAlignment="Left"
-                             Height="15"
-                             Width="150"/>
-                    <TextBox x:Name="txtBoxCharClass"
-                             HorizontalAlignment="Left"
-                             Height="15"
-                             Width="150"/>
-                    <TextBox x:Name="txtBoxCharLevel"
-                             HorizontalAlignment="Left"
-                             Height="15"
-                             Width="150"/>
-                </StackPanel>
-            </StackPanel>
+            
+            <Label Grid.Row="0" Grid.Column="0" Content="이름: " HorizontalAlignment="Center" VerticalAlignment="Center"></Label>
+            <Label Grid.Row="1" Grid.Column="0" Content="직업: " HorizontalAlignment="Center" VerticalAlignment="Center"></Label>
+            <Label Grid.Row="2" Grid.Column="0" Content="레벨: " HorizontalAlignment="Center" VerticalAlignment="Center"></Label>
+
+            <TextBox x:Name="tbxCharName" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="150" Height="30"></TextBox>
+            <ComboBox x:Name="cmbbxCharClass" Grid.Row="1" Grid.Column="1" Width="150" Height="30">
+                <ComboBoxItem Content="전사" IsSelected="True"></ComboBoxItem>
+                <ComboBoxItem Content="마법사"></ComboBoxItem>
+
+            </ComboBox>
+            <TextBox x:Name="tbxCharLevel" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="150" Height="30"></TextBox>
         </Grid>
+
+        <CheckBox x:Name="chkImportant" Grid.Row="1" Content="중요 캐릭터" HorizontalAlignment="Center" IsChecked="False" Margin="0,5"></CheckBox>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,5" >
+            <Button x:Name="btnCreate" Content="생성" Margin="5,0,10,0" Padding="10,5" Click="btnCreate_Click"></Button>
+            <Button x:Name="btnDelete" Content="삭제"  Margin="10,0,5,0" Padding="10,5" Click="btnDelete_Click"></Button>
+        </StackPanel>
+
+        <ListBox x:Name="lstbxChars" Grid.Row="3" Margin="10">
+        </ListBox>
     </Grid>
 </Window>
