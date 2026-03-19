@@ -8,10 +8,10 @@
         Title="캐릭터 생성기" Height="600" Width="400">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto" MinHeight="300"></RowDefinition>
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0">
@@ -24,28 +24,46 @@
                 <ColumnDefinition Width="*"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            
+
             <Label Grid.Row="0" Grid.Column="0" Content="이름: " HorizontalAlignment="Center" VerticalAlignment="Center"></Label>
             <Label Grid.Row="1" Grid.Column="0" Content="직업: " HorizontalAlignment="Center" VerticalAlignment="Center"></Label>
             <Label Grid.Row="2" Grid.Column="0" Content="레벨: " HorizontalAlignment="Center" VerticalAlignment="Center"></Label>
 
-            <TextBox x:Name="tbxCharName" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="150" Height="30"></TextBox>
-            <ComboBox x:Name="cmbbxCharClass" Grid.Row="1" Grid.Column="1" Width="150" Height="30">
-                <ComboBoxItem Content="전사" IsSelected="True"></ComboBoxItem>
-                <ComboBoxItem Content="마법사"></ComboBoxItem>
+            <TextBox x:Name="tbxCharName"
+                     Grid.Row="0" Grid.Column="1"
+                     HorizontalAlignment="Center"
+                     VerticalAlignment="Center" 
+                     Width="150" Height="30"
+                     Text="캐릭터 이름을 입력하세요."
+                     Foreground="Gray"
+                     GotFocus="tbxCharName_GotFocus"
+                     LostFocus="tbxCharName_LostFocus"></TextBox>
 
+            <ComboBox x:Name="cmbbxCharClass" Grid.Row="1" Grid.Column="1" Width="150" Height="30" SelectionChanged="cmbbxCharClass_SelectionChanged">
+                <ComboBoxItem Content="전사"></ComboBoxItem>
+                <ComboBoxItem Content="마법사"></ComboBoxItem>
             </ComboBox>
-            <TextBox x:Name="tbxCharLevel" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="150" Height="30"></TextBox>
+
+            <TextBox x:Name="tbxCharLevel" Grid.Row="2" Grid.Column="1"
+                     HorizontalAlignment="Center" VerticalAlignment="Center"
+                     Width="150" Height="30"
+                     PreviewKeyDown="tbxCharLevel_PreviewKeyDown"
+                     KeyDown="tbxCharLevel_KeyDown"></TextBox>
         </Grid>
 
-        <CheckBox x:Name="chkImportant" Grid.Row="1" Content="중요 캐릭터" HorizontalAlignment="Center" IsChecked="False" Margin="0,5"></CheckBox>
+        <CheckBox x:Name="chkImportant" Grid.Row="1" Content="중요 캐릭터" HorizontalAlignment="Center" IsChecked="False" Margin="0,5,0,5"></CheckBox>
 
-        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,5" >
-            <Button x:Name="btnCreate" Content="생성" Margin="5,0,10,0" Padding="10,5" Click="btnCreate_Click"></Button>
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,5,0,5" >
+            <Label x:Name="lblCharClass" Width="Auto" Content=""></Label>
+            <Button x:Name="btnCreate" Content="생성" Margin="5,0,10,0" Padding="10,5" ></Button>
             <Button x:Name="btnDelete" Content="삭제"  Margin="10,0,5,0" Padding="10,5" Click="btnDelete_Click"></Button>
         </StackPanel>
 
-        <ListBox x:Name="lstbxChars" Grid.Row="3" Margin="10">
-        </ListBox>
+        <StackPanel x:Name="stackPnlCharlst" Grid.Row="3" MouseDown="stackPnlCharlst_MouseDown" Background="Aqua">
+            <Label x:Name="lblSender" Margin="5"></Label>
+            <Label x:Name="lblSource" Margin="5"></Label>
+            <ListBox x:Name="lstbxChars" Margin="10,10,10,10" >
+            </ListBox>
+        </StackPanel>
     </Grid>
 </Window>
