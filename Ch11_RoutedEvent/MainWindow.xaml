@@ -5,8 +5,64 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Ch11_RoutedEvent"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-
-    </Grid>
+        Title="학생 성적 관리" Height="520" Width="400">
+    <StackPanel Margin="10">
+        <!-- 3단계 시연 : 이벤트 연결 XAML방식 -->
+        
+        <!-- 이름 입력 (GotFocus / LostFocus) -->
+        <!-- GotFocus : 해당 컨트롤이 포커스를 받을 때 발생하는 이벤트 -->
+        <!-- LostFocus : 해당 컨트롤이 포커스를 잃을 때 발생하는 이벤트 -->
+        <Label Content="이름" />
+        <TextBox x:Name="tbxName" Width="360" Height="28"
+                 Text="이름을 입력하세요"
+                 Foreground="Gray"
+                 GotFocus="tbxName_GotFocus"
+                 LostFocus="tbxName_LostFocus" />
+        
+        <!-- 점수 입력 (PreviewKeyDown + KeyDown) -->
+        <!-- PreviewKeyDown: 터널링 이벤트, 부모로 전파됨, 키보드 입력시 발생-->
+        <!-- KeyDown: 키보드 입력시 발생-->
+        <Label Content="점수(숫자만): " Margin="0,8,0,0" />
+        <TextBox x:Name="tbxScore" Width="360" Height="28"
+                 PreviewKeyDown="tbxScore_PreviewKeyDown"
+                 KeyDown="tbxScore_KeyDown" />
+        
+        <!-- 3단계 시연 : 첨부 이벤트 (Attached Event) -->
+        
+        <!-- 학년 버튼 3개의 Click을 부모 StackPanel에서 일괄 처리 -->
+        <!-- Button.click : 첨부 이벤트 문법 -->
+        <StackPanel Orientation="Horizontal" Button.Click="Grade_Click">
+            <Button Content="1학년" Padding="10,4" Margin="0,0,5,0" />
+            <Button Content="2학년" Padding="10,4" Margin="0,0,5,0" />
+            <Button Content="3학년" Padding="10,4" />
+        </StackPanel>
+        <Label x:Name="lblGrade" Content="선택된 학년: 없음" />
+        
+        <!-- 3단계 시연 : 코드비하인드에서 연결 -->
+        
+        <!-- 이 버튼은 Click 속성이 없음, 코드비하인드에서 이벤트 연결-->
+        <Button x:Name="btnRegister" Content="등록" Padding="10, 5"
+                HorizontalAlignment="Left"
+                Margin="0,5" />
+        
+        <!-- 2단계 시연 : 버블링 확인 -->
+        
+        <!-- Grid에 MouseDown을 연결하여 바탕을 클랙해도 핸들러가 실행됨을 확인 -->
+        <!-- Grid에 BackGround를 설정하지 않으면 null, 빈 영역 클릭 시 이벤트가 발생하지 않음-->
+        <Grid x:Name="grdListArea" Margin="0,8,0,0"
+              Background="Transparent"
+              MouseDown="grdListArea_MouseDown">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Label x:Name="lslListHeader" Grid.Row="0" Content="학생 목록" FontWeight="Bold" />
+            
+            <!-- SelectionChanged : 선택된 항목이 변경될 때 발생하는 이벤트 -->
+            <ListBox x:Name="lstStudents" Grid.Row="1" Height="150" SelectionChanged="lstStudents_SelectionChanged" />
+        </Grid>
+        
+        <!-- 상태 표시 -->
+        <Label x:Name="lblStatus" Content="" Foreground="Gray" />
+    </StackPanel>
 </Window>
