@@ -1,0 +1,52 @@
+# 프로퍼티 값 변경 시 UI 자동반영 - INotifyPropertyChanegd
+
+## DataBiding의 한계  
+DataContext를 통째로 교체하면 UI가 갱신되지만, ** 기존 객체의 프로퍼티 값만 변경** 하면 UI가 변경되 지 않는다.  
+이 문제는 두 가지 상황에서 주로 발생한다.  
+
+1. **단일 프로퍼티 변경** : 객체의 프로퍼티 값을 코드에서 바꿨을 때 UI가 갱신되지 않음
+2. **컬렉션 변경**: 'List\<T>'에 항목을 추가/삭제했을 때 ListBox가 갱신되지 않음  
+
+이런 문제점을 해결하기 위해 INotifyPropertyChanged와 ObservableCollection 을 구현하여 사용한다.  
+이 외에 DependencyProperty, INotifyCollectionChanged, INotifyDataErrorInfo 같은 프로퍼티 변경 알림 매커니즘이 있지만,
+직접 구현하는 경우가 굉장히 드물기 때문에 INotifyPropertyChanged와 ObservableCollection만 일단 알아도 무관하다.  
+
+---
+
+## INotifyPropertyChanged  
+**INotifyPropertyChanged**는 'System.ComponentModel' 네임스페이스에 정의되어 있는 인터페이스이다.  
+지난 학습에서 Character가 Damaged 이벤트를 발생 -> BattleLog 메서드가 수신하여 로그 출력 하는 이벤트 동작과 동일한 원리이다.  
+ex) INotifyPropertyChanged: ViewModel이 PropertyChanged 이벤트 발생 -> WPF가 수신하여 UI 변경
+
+### **인터페이스 정의**
+
+```csharp
+public interface INotifyPropertyChanged
+{
+	event PropertyChangedEventHandler PropertyChanged;
+}
+```  
+
+인터페이스가 요구하는 것은 PropertyChanged라는 이벤트 하나 뿐이다. 이 이벤트를 프로퍼트의 setter에서 발생시키면 끝  
+
+### 구현 패턴  
+
+```csharp
+using System.ComponentModel; // INotifyPropertyChanged가 정의된 네임스페이스
+
+public class Character : INotifyPropertyChanged
+{
+	// 인터페이스가 요구하는 이벤트
+	public event PropertyChangedEventHandler PropertyChanged;
+
+	// 이벤트를 발생시키는 헬퍼 메서드
+	// propertyName: 변경된 프로퍼티의 이름(string)
+	protected void OnPropertyChanged(stirng propertyName)
+	{
+		// 지난 이벤트 학습에서 배운 패턴
+		// Character 클래스가 델리게이트를 가지고 있고
+		PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+	}
+}
+
+  

@@ -24,18 +24,18 @@
 
         <Label Grid.Row="0" Grid.Column="0" Content="이름: "></Label>
         <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding CharName}"></TextBox>
-        
+
         <Label Grid.Row="1" Grid.Column="0" Content="직업: "></Label>
-        <ComboBox Grid.Row="1" Grid.Column="1">
+        <ComboBox Grid.Column="1" Margin="0,112,0,0" Grid.RowSpan="2">
             <ComboBoxItem Content="전사"></ComboBoxItem>
             <ComboBoxItem Content="마법사"></ComboBoxItem>
         </ComboBox>
         <Label Grid.Row="2" Grid.Column="0" Content="레벨: "></Label>
         <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Level}"></TextBox>
-        
+
         <Label Grid.Row="3" Grid.Column="0" Content="HP: "></Label>
         <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Hp}"></TextBox>
-        
+
         <Label Grid.Row="4" Grid.Column="0" Content="MP: "></Label>
         <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding Mp}"></TextBox>
 
