@@ -19,6 +19,8 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"></ColumnDefinition>
@@ -49,6 +51,11 @@
                      Width="150" Height="30"
                      PreviewKeyDown="tbxCharLevel_PreviewKeyDown"
                      KeyDown="tbxCharLevel_KeyDown"></TextBox>
+
+            <Label Content="HP: " Grid.Row="3" Grid.Column="0" HorizontalAlignment="Center"></Label>
+            <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Hp}"></TextBox>
+            <Label Content="MP: " Grid.Row="4" Grid.Column="0" HorizontalAlignment="Center"></Label>
+            <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding Mp}"></TextBox>
         </Grid>
 
         <CheckBox x:Name="chkImportant" Grid.Row="1" Content="중요 캐릭터" HorizontalAlignment="Center" IsChecked="False" Margin="0,5,0,5"></CheckBox>

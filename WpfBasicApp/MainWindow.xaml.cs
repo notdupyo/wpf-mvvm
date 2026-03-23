@@ -21,7 +21,6 @@ namespace WpfBasicApp
 
         public MainWindow()
         {
-            
 
             InitializeComponent();
 
@@ -124,6 +123,8 @@ namespace WpfBasicApp
             Character character = new Character(name, charClass, level, hp, mp);
             list.Add(character);
 
+            this.DataContext = character;
+
             if (chkImportant.IsChecked == true)
             {
                 displayFormat = $"[중요] {list[list.Count - 1].CharClass} {list[list.Count - 1].CharName} (Lv.{list[list.Count - 1].Level})";
@@ -161,7 +162,7 @@ namespace WpfBasicApp
         }
     }
 
-    public class Character
+   public class Character
     {
         public string CharName { get; set; }
         public string CharClass { get; set; }
