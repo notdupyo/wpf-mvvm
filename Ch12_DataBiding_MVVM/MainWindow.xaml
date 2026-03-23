@@ -5,8 +5,57 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Ch12_DataBiding_MVVM"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="학생정보 바인딩" Height="450" Width="400">
+    <!-- DataContext에 Student 객체 연결-->
+    <StackPanel Margin="15">
+        <!-- 1. TwoWay 바인딩 : 입력 -->
 
-    </Grid>
+        <Label Content="이름:" FontWeight="Bold" />
+        
+        <!-- TwoWay: 사용자가 TextBox 수정하면, Student.Name 속성값도 변경됨 -->
+        <!-- TextBox의 기본 Mode는 TwoWay -->
+        <!-- UpdateSourceTrigger값 PropertyChanged는 한 글자 입력할 때마다 속성값 변경-->
+        <TextBox x:Name="tbxName"
+                 Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                 Width="300" Height="30" HorizontalAlignment="Left" />
+
+        
+        <Label Content="학년: " FontWeight="Bold" Margin="0,10,0,0"/>
+
+        <!-- TextBox의 UpdateSouceTrigger 기본값은 LostFocus-->
+        <TextBox x:Name="tbxGrage"
+                 Text="{Binding Grade, UpdateSourceTrigger=LostFocus}"
+                 Width="300" Height="30" HorizontalAlignment="Left" />
+
+        <Label Content="점수:" FontWeight="Bold" Margin="0,10,0,0" />
+        <TextBox x:Name="tbxScore"
+                 Text="{Binding Score}"
+                 Width="300" Height="30" HorizontalAlignment="Left" />
+        
+        <!-- 2. OneWay 바인딩 : 읽기 전용-->
+
+        <!-- Label의 기본 Mode는 OneWay-->
+        <Label Content="현재 바인딩된 데이터:" FontWeight="Bold" Margin="0,20,0,0" />
+        <Label x:Name="lblName"
+               Content="{Binding Name, Mode=OneWay}"
+               FontSize="16" Foreground="Blue" />
+        <!-- 현재 Name 프로퍼티가 변경되면 이 Label도 갱신되어야 하지만
+             Student클래스에 INotifyPropertyChanged가 없으므로 최초 표시 이후 갱신되지 않음-->
+        
+        <!-- 3. 바인딩 확인 -->
+        <!-- TwoWayBidong을 통해 TextBox에서 변경한 값이 실제로 소스코드 객체에 반영됐는지 확인-->
+        <Button x:Name="btnCheck" Content="소스 객체 값 확인"
+                Padding="10, 5" Margin="0,10,0,0"
+                HorizontalAlignment="Left"
+                Click="btnCheck_Click" />
+
+        <Label x:Name="lblResult" Content="" Foreground="Red" />
+        
+        <!-- 4. DataContext 교체 -->
+        <!-- DataContext를 새 객체로 교체하면 바인딩된 모든 UI가 새 데이터로 갱신됨-->
+        <Button x:Name="btnSwitch" Content="다른 학생으로 교체"
+                Padding="10,5" Margin="0,10,0,0"
+                HorizontalAlignment="Left"
+                Click="btnSwitch_Click" />
+    </StackPanel> 
 </Window>

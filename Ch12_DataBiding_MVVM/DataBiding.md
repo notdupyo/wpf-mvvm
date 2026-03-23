@@ -45,3 +45,75 @@ lstbxChars.Items.Add(displayFormat)
 // 바인딩 예시
 [소스]Character.Name : C#데이터 <-> [타겟]TextBox.Text : 화면표시
 ```
+
+## 데이터바인의 출처 : DataContext  
+XAML에서 바인딩을 사용하려면 '이 화면의 데이터가 어디에 있는가'를 WPF(UI단)에 알려줘야 한다.  
+이 정보가 DataContext에 있다.  
+
+```csharp
+// 코드비하인드에서 DataContext 설정
+this.DataContext = myCharacter; // 이 Window의 데이터 소스는 myCahracter 객체이다.
+```  
+
+DataContext를 설정하면, 해당 컨트롤과 모든 자식 컨트롤이 이 데이터를 바인딩 소스로 사용할 수 있다.  
+Window에 설정하면 Window 안의 모든 컨트롤이 사용 가능하다. 이것을 DataContext 상속이라고 한다.  
+특정 자식 컨틀로에 별도의 DataContext를 설정하면, 그 컨트롤과 그 하위 컨트롤은 부모의 DataContext 대신 별도로 설정된 것을 사용한다.  
+  
+## XAML에서 바인딩 문법  
+DataContext가 설정된 상태에서, XAML에서 {Binding 프로퍼티명} 문법으로 바인딩을 선언한다.  
+```xml
+<!--- DataContext가 Character객체일 때->
+<!--Character 객체의 Name 프로퍼티 값이 TextBox.Text에 표시됨-->
+<TextBox Text="{Binding Name}" />
+
+<!-- Character 객체의 Level 프로퍼티 값이 Label.Content에 표시됨 -->
+<Label Content="{Binding Level}" />
+```  
+>{Binding Name}은 "DataContext 객체의 Name 프로퍼티를 이 속성에 연결하라"는 뜻.  바인딩 대상은 반드시 프로퍼티(속성)여야 한다.  
+즉 필드값이 public string name;과 같이 일반 변수면 WPF는 대상을 찾지 못한다. 반드시 public string Name {get; set;} 과 같은 프로퍼티(속성)을 사용해야한다.  
+
+## 바인딩 방향 - Mode  
+데이터가 소스(필드 속성)에서 타겟(WPF 컨트롤)로만 전달하는지, 양방향으로 주고 받는지를 지정한다.  
+
+Mode | 방향 | 설명
+---|---|---
+OneWay | 소스->타겟 | 단방향, 소스가 변경되면 화면이 갱신됨. 화면 병경은 소스에 반영되지 않음  
+TwoWay | 소스<->타겟 | 양방향, 소스 변경 시 화면 갱신. 화면 변경시 소스 갱신됨
+OneWayToSource | 타겟->소스 | 단방향, 화면 병경이 소스에만 반영됨
+OneTime | 소스->타겟(1회) | 최초 한 번만 값을 가져오고, 이후 변경은 반영하지 않음
+
+```xml
+<!-- 기본: TextBox는 TwoWay, Label/TextBlock은 OneWay -->
+<TextBox Text="{Binding Name, Mode=TwoWay}" />
+<Label Content="{Binding Name, Mode=OneWay}" />
+```  
+
+TextBox처럼 사용자가 값을 입력할 수 있는 컨트롤은 기본이 TwoWay이고, Label처럼 읽기 전용 컨트롤은
+기본이 OneWay이다. 대부분은 기본값을 그대로 사용하면 된다.  
+
+## UpdateSourceTrigger - TwoWay에서 "언제"소스를 갱신하는가  
+TwoWay 바인딩에서 사용자가 TextBox에 값을 입력할 때, 언제 그 값이 소스 프로퍼티에 반영되는 지를 지정한다.
+
+UpdateSourceTrigger | 시점
+---|---
+LostFocus(TextBox 기본값) | TextBox에서 포커스가 빠져나갈 때
+PropertyChanged | 글자를 입력할 때마다 즉시
+Explicit | 코드에서 명시적으로 호출할 때만
+
+```xml
+<!-- 기본: 포커스를 잃을 때 소스에 반영 -->
+<TextBox Text="Binding Name" />
+
+<!-- 글자를 입력할 때마다 즉시 소스에 반영 -->
+<TextBox Text"{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
+```
+
+## 바인딩의 한계  
+UI 컨트롤의 값(타겟)이 변경되면 WPF가 감지하여 c# 소스 프로퍼티의 값을 변경하지만,
+반대로 c# 소스 프로퍼티의 값을 변경하면 UI가 감지하지 못함(UI 표시가 자동으로 변경되지 않음)  
+
+DataContext를 설정한 최초 시점에는 값이 화면에 표시된다.(랜더링때 WPF가 C# 프로퍼티를 한번 읽음)  
+하지만 이후에 프로퍼티 값을 변경해도 화면이 갱신되지 않는다. WPF는 C# 프로퍼티의 값이 변경됐다는 사실을 알 수 없다.  
+
+이 문제를 해결하는 것이 INotifyPropertyChanged 구현이다. "프로퍼티가 변경됐다"는 알림을 WPF에 보내어 UI를 자동으로 갱신한다.  
+
