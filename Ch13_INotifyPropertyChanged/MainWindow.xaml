@@ -5,8 +5,32 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Ch13_INotifyPropertyChangedAndObservableCollection"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="변경 알림 예제" Height="450" Width="350">
+    <StackPanel Margin="15">
+        
+        <!-- 1. INotifyProperyChanged 확인 -->
+        <Label Content="학생 이름:" />
+        <TextBox Text="{Binding CurrentStudent.Name, UpdateSourceTrigger=PropertyChanged}"
+                 Width="250" HorizontalAlignment="Left" />
 
-    </Grid>
+        <Label Content="점수: " />
+        <TextBox Text="{Binding CurrentStudent.Score}"
+                 Width="250" HorizontalAlignment="Left" />
+        
+        <!-- 코드에서 프로퍼티를 변경하면 TextBox가 자동 갱신되는지 확인 -->
+        <Button Content="점수 +10" Click="btnAddScore_Click"
+                Padding="8,4" HorizontalAlignment="Left" Margin="0,10" />
+        
+        <!-- 2. ObservableCollection 확인 -->
+        <Label Content="학생 목록:" FontWeight="Bold" Margin="0,10,0,0" />
+        <ListBox ItemsSource="{Binding Students}"
+                 Height="120"
+                 DisplayMemberPath="Name" />
+
+        <StackPanel Orientation="Horizontal" Margin="0,10">
+            <Button Content="학생 추가" Click="btnAdd_Click" Padding="8,4" Margin="0,0,5,0" />
+            <Button Content="마지막 제거" Click="btnRemove_Click" Padding="8,4" />
+        </StackPanel>
+    </StackPanel>
+                
 </Window>
