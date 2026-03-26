@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.ComponentModel;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -164,6 +165,9 @@ namespace WpfBasicApp
 
    public class Character
     {
+
+
+
         public string CharName { get; set; }
         public string CharClass { get; set; }
         public int Level { get; set; }
